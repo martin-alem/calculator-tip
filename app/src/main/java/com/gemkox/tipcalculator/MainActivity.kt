@@ -1,10 +1,11 @@
 package com.gemkox.tipcalculator
 
-import android.icu.text.NumberFormat
+import java.text.NumberFormat
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.annotation.DrawableRes
+import androidx.annotation.VisibleForTesting
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -31,6 +32,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
@@ -114,7 +116,7 @@ fun TipCalculatorLayout(modifier: Modifier = Modifier) {
             .fillMaxWidth()
             .padding(8.dp), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically){
             Text(text = "Round up tip?")
-            Switch(checked = roundUp, onCheckedChange = { roundUp = it })
+            Switch(checked = roundUp, onCheckedChange = { roundUp = it }, modifier = Modifier.testTag("roundUpSwitch"))
         }
         Text(
             text = "Tip Amount: $tip",
@@ -141,8 +143,8 @@ fun EditableNumberField(value: String, onValueChange: (String) -> Unit, keyboard
         singleLine = true
     )
 }
-
-private fun calculateTip(amount: Double, tipPercent: Double, roundUp: Boolean = false): String {
+@VisibleForTesting
+internal fun calculateTip(amount: Double, tipPercent: Double, roundUp: Boolean = false): String {
     var tip = tipPercent / 100 * amount
     if(roundUp){
         tip = kotlin.math.ceil(tip)
